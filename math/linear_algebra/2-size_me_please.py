@@ -3,8 +3,9 @@ def matrix_shape(matrix):
     matrix_size = []
 
     if len(matrix) > 1:
-        matrix_size.append(int(len(matrix)))
-        matrix_size.append(int(len(matrix[0])))
+        matrix_size.append(len(matrix))
+        if isinstance(matrix[0], list):
+            matrix_size.append(len(matrix[0]))
         if isinstance(matrix[0][0], list):
-            matrix_size.append(int(len(matrix[0][0])))
+            matrix_size.append(len(matrix[0][0]))
     return matrix_size
