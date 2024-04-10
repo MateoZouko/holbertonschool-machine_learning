@@ -8,13 +8,9 @@ def matrix_shape(matrix):
     """
     Function that returns the shape of a matrix
     """
-    matrix_size = []
-
+    if not matrix:
+        return []
     if isinstance(matrix[0], list):
-        matrix_size.append(len(matrix))
-        matrix_size.append(len(matrix[0]))
-        if isinstance(matrix[0][0], list):
-            matrix_size.append(len(matrix[0][0]))
+        return [len(matrix)] + matrix_shape(matrix[0])
     else:
-        matrix_size.append(len(matrix))
-    return matrix_size
+        return [len(matrix)]
