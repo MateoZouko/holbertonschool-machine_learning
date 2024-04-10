@@ -2,6 +2,8 @@
 """
 Task 2
 """
+
+
 def matrix_shape(matrix):
     """
     Function that returns the shape of a matrix
