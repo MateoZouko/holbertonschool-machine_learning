@@ -2,11 +2,10 @@
 """
 Task 10
 """
-import numpy as np
 
 
 def np_shape(matrix):
     """
-    Task 10
+    Function that returns the shape of a matrix
     """
-    return np.shape(matrix)
+    return matrix.shape
