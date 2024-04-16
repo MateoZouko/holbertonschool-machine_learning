@@ -20,6 +20,6 @@ def change_scale():
     plt.xlabel("Time (years)")
     plt.ylabel("Fraction Remaining")
 
-    plt.plot(x, y, color="red")
+    plt.plot(x, y)
     plt.yscale("log")
     plt.xlim(0, 28650)
