@@ -22,4 +22,5 @@ def scatter():
     plt.xlabel("Height (in)")
     plt.ylabel("Weight (lbs)")
 
-    plt.scatter(x, y, c='m', s=10)
+    plt.scatter(x, y, color="magenta")
+
