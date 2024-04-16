@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
+"""
+Task 3
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def two():
+    """
+    scatter plot
+    """
 
     x = np.arange(0, 21000, 1000)
     r = np.log(0.5)
