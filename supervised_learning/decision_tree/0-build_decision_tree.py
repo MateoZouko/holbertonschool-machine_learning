@@ -21,6 +21,9 @@ class Node:
         self.depth = depth
 
     def max_depth_below(self):
+        """
+        Calculate the maximum depth below the node
+        """
         if self.is_leaf:
             return self.depth
         else:
@@ -39,6 +42,9 @@ class Leaf(Node):
         self.depth = depth
 
     def max_depth_below(self):
+        """
+        Calculate the maximum depth below the node
+        """
         return self.depth
 
 
@@ -61,4 +67,7 @@ class Decision_Tree():
         self.predict = None
 
     def depth(self):
+        """
+        Calculate the maximum depth of the tree
+        """
         return self.root.max_depth_below()
