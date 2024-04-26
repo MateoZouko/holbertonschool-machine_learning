@@ -50,9 +50,10 @@ class Node:
         """
         Return the string representation of the node
         """
+        node_str = "root" if self.is_root else "node"
         left_child_str = self.left_child_add_prefix(str(self.left_child))
         right_child_str = self.right_child_add_prefix(str(self.right_child))
-        return f"node [feature={self.feature},\
+        return f"{node_str} [feature={self.feature},\
         threshold={self.threshold}]\n{left_child_str}{right_child_str}"
 
     def left_child_add_prefix(self, text):
