@@ -80,7 +80,7 @@ class Node:
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += ("       " + x) + "\n"
+                new_text += ("       "+x) + "\n"
         return new_text
 
 
