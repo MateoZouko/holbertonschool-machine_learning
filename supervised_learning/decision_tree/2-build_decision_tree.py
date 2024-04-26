@@ -50,11 +50,14 @@ class Node:
         """
         Return the string representation of the node
         """
-        node_str = "root" if self.is_root else "node"
-        left_child_str = self.left_child_add_prefix(str(self.left_child))
-        right_child_str = self.right_child_add_prefix(str(self.right_child))
-        return f"{node_str} [feature={self.feature},\
-        threshold={self.threshold}]\n{left_child_str}{right_child_str}"
+        node_type = "root" if self.is_root else "-> node"
+        node_repr = f"{node_type} [feature={self.feature},\
+ threshold={self.threshold}] depth={self.depth}\n"
+        if self.left_child:
+            node_repr += self.left_child_add_prefix(self.left_child.__str__())
+        if self.right_child:
+            node_repr += self.right_child_add_prefix(self.right_child.__str__())
+        return node_repr
 
     def left_child_add_prefix(self, text):
         """
