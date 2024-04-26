@@ -54,9 +54,9 @@ class Node:
         node_repr = f"{node_type} [feature={self.feature},\
  threshold={self.threshold}]\n"
         if self.left_child:
-            node_repr += "\n" + self.left_child_add_prefix(self.left_child.__str__())
+            node_repr += self.left_child_add_prefix(self.left_child.__str__())
         if self.right_child:
-            node_repr += "\n" + self.right_child_add_prefix(self.right_child.__str__())
+            node_repr += self.right_child_add_prefix(self.right_child.__str__())
         return node_repr
 
     def left_child_add_prefix(self, text):
@@ -78,7 +78,7 @@ class Node:
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
             if x:
-                new_text += ("       " + x) + "\n"
+                new_text += ("       " +x) + "\n"
         return new_text
 
 
