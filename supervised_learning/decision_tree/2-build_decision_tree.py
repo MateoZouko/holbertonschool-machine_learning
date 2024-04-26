@@ -54,9 +54,9 @@ class Node:
         node_repr = f"{node_type} [feature={self.feature},\
  threshold={self.threshold}]\n"
         if self.left_child:
-            node_repr += self.left_child_add_prefix(self.left_child.__str__())
+            node_repr += self.left_child_add_prefix(self.left_child.__str__().strip())
         if self.right_child:
-            node_repr += self.right_child_add_prefix(self.right_child.__str__())
+            node_repr += self.right_child_add_prefix(self.right_child.__str__().strip())
         return node_repr
 
     def left_child_add_prefix(self, text):
