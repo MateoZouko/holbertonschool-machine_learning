@@ -52,7 +52,7 @@ class Node:
         """
         node_type = "root" if self.is_root else "-> node"
         node_repr = f"{node_type} [feature={self.feature},\
- threshold={self.threshold}] depth={self.depth}\n"
+ threshold={self.threshold}]\n"
         if self.left_child:
             node_repr += self.left_child_add_prefix(self.left_child.__str__())
         if self.right_child:
