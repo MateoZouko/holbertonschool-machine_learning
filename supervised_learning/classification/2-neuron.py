@@ -40,7 +40,7 @@ class Neuron:
         Getter for A
         """
         return self.__A
-    
+
     def forward_prop(self, X):
         """
         Calculates the forward propagation of the neuron
