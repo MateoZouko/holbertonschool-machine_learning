@@ -103,17 +103,23 @@ class NeuralNetwork:
         """
         Calculates one pass of gradient descent on the neural network
         """
+
+    def gradient_descent(self, X, Y, A1, A2, alpha=0.05):
+        """
+        Calculates one pass of gradient descent on the neural network
+        """
         m = Y.shape[1]
-        dz1 = A1 - Y
-        dz2 = A2 - Y
-        dw1 = np.matmul(X, dz1.T) / m
-        dw2 = np.matmul(X, dz2.T) / m
-        db1 = np.sum(dz1) / m
-        db2 = np.sum(dz2) / m
-        self.__W1 -= (alpha * dw1).T
+
+        dZ2 = A2 - Y
+        dW2 = np.dot(dZ2, A1.T) / m
+        db2 = np.sum(dZ2, axis=1, keepdims=True) / m
+        dZ1 = np.dot(self.__W2.T, dZ2) * (A1 * (1 - A1))
+        dW1 = np.dot(dZ1, X.T) / m
+        db1 = np.sum(dZ1, axis=1, keepdims=True) / m
+
+        self.__W1 -= alpha * dW1
         self.__b1 -= alpha * db1
-        self.__A1 = self.forward_prop(X)
-        self.__W2 -= (alpha * dw2)
+        self.__W2 -= alpha * dW2
         self.__b2 -= alpha * db2
-        self.__A2 = self.forward_prop(X)
+
         return self.__W1, self.__b1, self.__W2, self.__b2
