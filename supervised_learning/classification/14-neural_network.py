@@ -129,7 +129,7 @@ class NeuralNetwork:
         Trains the neural network
         """
         if not isinstance(iterations, int):
-            raise TypeError("terations must be an integer")
+            raise TypeError("iterations must be an integer")
         if iterations < 0:
             raise ValueError("iterations must be a positive integer")
         if not isinstance(alpha, float):
