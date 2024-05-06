@@ -138,6 +138,8 @@ class NeuralNetwork:
             raise ValueError("alpha must be positive")
 
         for i in range(iterations):
-            self.__A1, self.__A2 = self.forward_prop(X)
+            A, cost = self.evaluate(X, Y)
             self.gradient_descent(X, Y, self.__A1, self.__A2, alpha)
-        return self.cost(Y, self.__A2)
+
+        A, cost = self.evaluate(X, Y)
+        return A, cost
