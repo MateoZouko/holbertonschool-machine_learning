@@ -142,6 +142,15 @@ class Node:
         self.indicator = lambda x: np.all(np.array(
             [is_large_enough(x), is_small_enough(x)]), axis=0)
 
+        def pred(self, x):
+            """
+            Alternative prediction (given)
+            """
+            if x[self.feature] > self.threshold:
+                return self.left_child.pred(x)
+            else:
+                return self.right_child.pred(x)
+
 
 class Leaf(Node):
     """
