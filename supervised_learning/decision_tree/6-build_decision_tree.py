@@ -194,6 +194,12 @@ class Leaf(Node):
         """
         pass
 
+    def pred(self, x):
+        """
+        Alt pred
+        """
+        return self.value
+
 
 class Decision_Tree():
     """
