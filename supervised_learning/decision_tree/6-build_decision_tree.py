@@ -256,7 +256,12 @@ class Decision_Tree():
         for leaf in leaves:
             leaf.update_indicator()
 
-        self.predict = lambda A: np.array([leaves[j].value for j in [np.array([leaf.indicator(A) for leaf in leaves])[:, i].nonzero()[0][0] for i in range(len(A))]])
+        self.predict = lambda A: np.array(
+            [leaves[j].value for j in [
+                np.array([leaf.indicator(A) for leaf in leaves])[:, i]
+                .nonzero()[0][0] for i in range(len(A))
+                ]]
+        )
 
     def pred(self, x):
         """ alternative prediction (given)"""
