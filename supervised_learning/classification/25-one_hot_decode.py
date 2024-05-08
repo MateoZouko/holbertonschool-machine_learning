@@ -5,16 +5,10 @@ Task 25
 import numpy as np
 
 
-def one_hot_decode(Y, classes):
+def one_hot_decode(one_hot):
     """
     converts a one-hot matrix into a vector of labels:
     """
-    if type(Y) is not np.ndarray or len(Y) == 0:
+    if type(one_hot) is not np.ndarray or len(one_hot.shape) != 2:
         return None
-    if type(classes) is not int or classes <= 0:
-        return None
-    if len(Y.shape) != 2:
-        return None
-    if Y.shape[1] != classes:
-        return None
-    return np.argmax(Y, axis=1)
+    return np.argmax(one_hot, axis=0)
