@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
-Task 26
+Task 27
 """
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-
 one_hot_encode = __import__('24-one_hot_encode').one_hot_encode
 one_hot_decode = __import__('25-one_hot_decode').one_hot_decode
 
+
 class DeepNeuralNetwork:
-    """ define a new class with private attributes"""
+    """
+    Deep neural network
+    """
     def __init__(self, nx, layers):
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -55,6 +57,7 @@ class DeepNeuralNetwork:
         """
         Calculates the forward propagation of the neural network
         """
+
         self.__cache['A0'] = X
 
         for i in range(1, self.__L):
@@ -62,14 +65,13 @@ class DeepNeuralNetwork:
                     i)], self.__cache['A{}'.format(i - 1)]
                     ) + self.__weights['b{}'.format(i)]
             sigmoid_z = 1 / (1 + np.exp(-z))
-                
+
             self.__cache['Z{}'.format(i)] = z
             self.__cache['A{}'.format(i)] = sigmoid_z
 
         Z_last = np.dot(self.__weights['W{}'.format(self.__L)],
                         self.__cache['A{}'.format(self.__L - 1)]
                         ) + self.__weights['b{}'.format(self.__L)]
-
         A_last = np.exp(Z_last) / np.sum(np.exp(Z_last), axis=0)
         self.__cache['Z{}'.format(self.__L)] = Z_last
         self.__cache['A{}'.format(self.__L)] = A_last
@@ -84,6 +86,7 @@ class DeepNeuralNetwork:
         m = Y.shape[1]
 
         cost = -np.sum(Y * np.log(A)) / m
+
         return cost
 
     def evaluate(self, X, Y):
@@ -109,9 +112,10 @@ class DeepNeuralNetwork:
 
     def gradient_descent(self, Y, cache, alpha=0.05):
         """
-        Calculates one pass of gradient descent on a DNN
+        Calculates one pass of gradient
         """
-        m = Y.shape[1]
+
+        m = Y.shape[0]
         dZee = dict()
         dB = dict()
         dW = dict()
@@ -137,6 +141,7 @@ class DeepNeuralNetwork:
         """
         trains the deep neural network
         """
+
         plot_cost = np.array([])
 
         if type(iterations) is not int:
@@ -151,12 +156,14 @@ class DeepNeuralNetwork:
 
         for i in range(iterations):
             Aact, cost = self.evaluate(X, Y)
-
             plot_cost = np.append(plot_cost, cost)
+
             if verbose:
-                print(f"Cost after {i} iterations: {cost}")
+                if i % step == 0 or i == iterations:
+                    print(f"Cost after {i} iterations: {cost}")
 
             self.gradient_descent(Y, self.__cache, alpha)
+
         Aact, cost = self.evaluate(X, Y)
 
         if graph:
@@ -194,6 +201,5 @@ class DeepNeuralNetwork:
         try:
             file = open(filename, 'rb')
             return pickle.load(file)
-
         except Exception as ex:
             return None
