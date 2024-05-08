@@ -144,7 +144,7 @@ class DeepNeuralNetwork:
 
         return self.evaluate(X, Y)
 
-    def save(self, filename):
+    def save(self, filename=None):
         """
         saves the instance object to a file in pickle format
         """
@@ -156,7 +156,7 @@ class DeepNeuralNetwork:
         pickle.dump(self, file)
         file.close()
 
-    def load(filename):
+    def load(filename=""):
         """
         loads a pickled DeepNeuralNetwork object
         """
