@@ -5,6 +5,7 @@ Task 16
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 
 class DeepNeuralNetwork:
@@ -147,5 +148,7 @@ class DeepNeuralNetwork:
         """
         saves the instance object to a file in pickle format
         """
-        if not filename.endswith(".pkl"):
-            filename += ".pkl"
+        if not filename.endswith('.pkl'):
+            filename += '.pkl'
+        with open(filename, 'wb') as file:
+            pickle.dump(self, file)
