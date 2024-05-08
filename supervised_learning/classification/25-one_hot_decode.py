@@ -5,7 +5,7 @@ Task 25
 import numpy as np
 
 
-def one_nt_encode(Y, classes):
+def one_hot_encode(Y, classes):
     """
     converts a numeric label vector into a one-nt matrix
     """
@@ -20,21 +20,21 @@ def one_nt_encode(Y, classes):
     return n
 
 
-def one_nt_decode(one_nt):
+def one_hot_decode(one_hot):
     """
-    converts a one-nt matrix into a numeric label vector
+    converts a one-hot matrix into a numeric label vector
     """
 
-    if one_nt is None:
+    if one_hot is None:
         return None
-    if type(one_nt) is not np.ndarray:
+    if type(one_hot) is not np.ndarray:
         return None
 
     try:
-        m = one_nt.shape[1]
-        classes = one_nt.shape[0]
+        m = one_hot.shape[1]
+        classes = one_hot.shape[0]
         n_De = np.ones((1, m), dtype=int)
-        for index, i in enumerate(one_nt.T):
+        for index, i in enumerate(one_hot.T):
             n_De[0, index] = (np.where(i == 1)[0][0])
 
         return n_De[0]
