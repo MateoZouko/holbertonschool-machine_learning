@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+"""
+Task 24
+"""
 import numpy as np
 
 
