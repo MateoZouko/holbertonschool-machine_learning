@@ -156,6 +156,7 @@ class DeepNeuralNetwork:
         pickle.dump(self, file)
         file.close()
 
+    @staticmethod
     def load(filename=""):
         """
         loads a pickled DeepNeuralNetwork object
@@ -164,5 +165,5 @@ class DeepNeuralNetwork:
             file = open(filename, "rb")
             return pickle.load(file)
 
-        except FileNotFoundError:
+        except Exception as ex:
             return None
