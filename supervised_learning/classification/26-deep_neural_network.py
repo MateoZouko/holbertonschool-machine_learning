@@ -145,24 +145,21 @@ class DeepNeuralNetwork:
         return self.evaluate(X, Y)
 
     def save(self, filename=None):
-        """
-        saves the instance object to a file in pickle format
-        """
+        """ save the instance"""
         if filename is None:
             return None
-        if not filename.lower().endswith('.pkl'):
-            filename += '.pkl'
+        if not filename.lower().endswith(".pkl"):
+            filename += ".pkl"
         file = open(filename, 'wb')
         pickle.dump(self, file)
         file.close()
 
     @staticmethod
     def load(filename=""):
-        """
-        loads a pickled DeepNeuralNetwork object
-        """
+        """load the instance"""
+
         try:
-            file = open(filename, "rb")
+            file = open(filename, 'rb')
             return pickle.load(file)
 
         except Exception as ex:
