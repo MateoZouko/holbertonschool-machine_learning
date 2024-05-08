@@ -150,7 +150,7 @@ class DeepNeuralNetwork:
         """
         if filename is None:
             return None
-        if not filename.lower.endswith('.pkl'):
+        if not filename.lower().endswith('.pkl'):
             filename += '.pkl'
         file = open(filename, 'wb')
         pickle.dump(self, file)
@@ -163,5 +163,6 @@ class DeepNeuralNetwork:
         try:
             file = open(filename, "rb")
             return pickle.load(file)
+
         except FileNotFoundError:
             return None
