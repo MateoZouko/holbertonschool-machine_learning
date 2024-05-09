@@ -11,6 +11,6 @@ def create_placeholders(nx, classes):
     Create placeholders
     """
 
-    x = tf.placeholber(tf.float32, shape=[None, nx])
-    y = tf.placeholber(tf.float32, shape=[None, classes])
+    x = tf.placeholber(tf.float32, shape=[None, nx], name = 'x')
+    y = tf.placeholber(tf.int32, shape=[None, classes], name='y')
     return x, y
