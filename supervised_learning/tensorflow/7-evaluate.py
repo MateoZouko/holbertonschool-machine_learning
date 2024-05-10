@@ -7,11 +7,12 @@ import tensorflow.compat.v1 as tf
 
 def evaluate(X, Y, save_path):
     """
-    X is a numpy.ndarray containing the input data to evaluate
+    Function that evaluates the output of a neural network
     """
-    saver = tf.train.import_meta_graph(save_path + ".meta")
+    saver = tf.train.import_meta_graph(save_path + '.meta')
     with tf.Session() as sess:
         saver.restore(sess, save_path)
+        print("Modelo cargado desde:", save_path)
 
         x = tf.get_collection('x')[0]
         y = tf.get_collection('y')[0]
@@ -22,5 +23,9 @@ def evaluate(X, Y, save_path):
 
         prediction_result, accuracy_result, loss_result = sess.run(
             [pred, accuracy, loss], feed_dict={x: X, y: Y})
+
+        print("Predicciones:", prediction_result)
+        print("Precisión:", accuracy_result)
+        print("Pérdida:", loss_result)
 
         return prediction_result, accuracy_result, loss_result
