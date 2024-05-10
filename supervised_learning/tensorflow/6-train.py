@@ -3,7 +3,6 @@
 6th task on tensoflow project
 """
 import tensorflow.compat.v1 as tf
-tf.disable_eager_execution()
 
 calculate_accuracy = __import__('3-calculate_accuracy').calculate_accuracy
 calculate_loss = __import__('4-calculate_loss').calculate_loss
