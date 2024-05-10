@@ -52,5 +52,5 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations,
 
     saver = tf.train.Saver()
 
-    saving = (saver.save(sess, save_path))
+    saving = saver.save(sess, save_path)
     return saving
