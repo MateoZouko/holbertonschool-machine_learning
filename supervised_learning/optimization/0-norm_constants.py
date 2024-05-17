@@ -11,7 +11,6 @@ def normalization_constants(X):
     calculates the normalization
     (standardization) constants of a matrix
     """
-    max_value = np.max(X)
-    min_value = np.min(X)
-
-    return max_value, min_value
+    mu = np.mean(X, axis=0)
+    sigma = np.std(X, axis=0)
+    return mu, sigma
