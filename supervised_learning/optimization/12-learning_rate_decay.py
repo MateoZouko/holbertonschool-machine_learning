@@ -17,8 +17,14 @@ def learning_rate_decay(alpha, decay_rate, decay_step):
                 should occur before alpha is decayed further
     """
 
-    return tf.keras.optimizers.schedules.InverseTimeDecay(
-        initial_learning_rate=alpha,
+    global_step = tf.Variable(0, trainable=False, name='global_step')
+
+    learning_rate = tf.compat.v1.train.inverse_time_decay(
+        learning_rate=alpha,
+        global_step=global_step,
         decay_steps=decay_step,
-        decay_rate=decay_rate
+        decay_rate=decay_rate,
+        staircase=True
     )
+
+    return learning_rate
