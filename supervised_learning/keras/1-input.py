@@ -10,20 +10,17 @@ def build_model(nx, layers, activations, lambtha, keep_prob):
     """
     Task 1
     """
-    model = K.Sequential()
-    model.add(
-        K.layers.Dense(
-            layers[0], input_shape=(nx,),
-            activation=activations[0],
+    inputs = K.Input(shape=(nx,))
+    x = inputs
+
+    for i in range(len(layers)):
+        x = K.layers.Dense(
+            layers[i],
+            activation=activations[i],
             kernel_regularizer=K.regularizers.l2(lambtha)
-        )
-    )
-    for i in range(1, len(layers)):
-        model.add(K.layers.Dropout(1 - keep_prob))
-        model.add(
-            K.layers.Dense(
-                layers[i], activation=activations[i],
-                kernel_regularizer=K.regularizers.l2(lambtha)
-            )
-        )
+        )(x)
+        if i < len(layers) - 1:
+            x = K.layers.Dropout(1 - keep_prob)(x)
+
+    model = K.Model(inputs=inputs, outputs=x)
     return model
