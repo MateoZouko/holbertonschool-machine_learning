@@ -9,6 +9,9 @@ inception_block = __import__('0-inception_block').inception_block
 
 
 def inception_network():
+    """
+    Function that builds the inception network as described in
+    """
     input_shape = (224, 224, 3)
     inputs = K.Input(shape=input_shape)
 
