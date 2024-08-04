@@ -15,4 +15,3 @@ def matrix_shape(matrix):
         except TypeError:
             break
     return dim
-
