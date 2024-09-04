@@ -10,7 +10,7 @@ def create_layer(prev, n, activation):
     """
     function that creates a layer
     """
-    w = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
-    layer = tf.layers.Dense(n, activation, name='layer',
+    w = tf.keras.initializers.VarianceScaling(mode="fan_avg")
+    layer = tf.keras.layers.Dense(n, activation, name='layer',
                             kernel_initializer=w)
     return layer(prev)
