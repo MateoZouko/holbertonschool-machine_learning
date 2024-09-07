@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines a function that builds, trains, and saves
-neural network classifier
+Task 6
 """
 
 
