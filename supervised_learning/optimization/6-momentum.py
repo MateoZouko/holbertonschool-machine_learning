@@ -12,6 +12,6 @@ def create_momentum_op(alpha, beta1):
     tensorflow using the gradient descent with momentum optimization algorithm
     """
 
-    optimizer = tf.train.MomentumOptimizer(alpha, beta1)
+    optimizer = tf.keras.optimizers.SGD(alpha, beta1)
 
     return optimizer
