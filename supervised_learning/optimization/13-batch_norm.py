@@ -8,7 +8,8 @@ import numpy as np
 
 def batch_norm(Z, gamma, beta, epsilon):
     """
-    normalizes an unactivated output of a neural network using batch normalization
+    normalizes an unactivated output of a
+    neural network using batch normalization
     """
     m = Z.shape[0]
     mean = np.sum(Z, axis=0) / m
