@@ -4,9 +4,6 @@ Task 6
 """
 
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import random
-import os
 
 
 def create_momentum_op(alpha, beta1):
