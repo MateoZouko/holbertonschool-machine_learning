@@ -6,7 +6,7 @@ Task 2
 import numpy as np
 
 
-def conv_backward(dZ, A_prev, W, b, activation, padding="same", stride=(1, 1)):
+def conv_backward(dZ, A_prev, W, b, activation='relu', padding="same", stride=(1, 1)):
     """
     Function that performs back propagation over a convolutional layer of a
     neural network
