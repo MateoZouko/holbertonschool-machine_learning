@@ -3,7 +3,6 @@
 Task 4
 """
 
-import numpy as np
 import tensorflow.compat.v1 as tf
 
 
