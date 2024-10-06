@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines a function that builds an inception network
-using Keras model
+Task 1
 """
 
 
