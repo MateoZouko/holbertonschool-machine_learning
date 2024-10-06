@@ -11,7 +11,7 @@ def lenet5(X):
     """
     Builds a modified version of LeNet-5 architecture using Keras
     """
-    weights_initializer = K.initializers.he_normal()
+    weights_initializer = K.initializers.he_normal(seed=0)
     C1 = K.layers.Conv2D(filters=6,
                          kernel_size=(5, 5),
                          padding='same',
