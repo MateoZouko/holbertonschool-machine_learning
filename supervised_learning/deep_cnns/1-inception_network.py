@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines a function that builds an inception network
-using Keras model
+Task 1
 """
 
 
@@ -13,7 +12,7 @@ def inception_network():
     """
     Builds an inception network using Keras model
     """
-    init = K.initializers.he_normal()
+    init = K.initializers.he_normal(seed=0)
     activation = K.activations.relu
     img_input = K.Input(shape=(224, 224, 3))
     C0 = K.layers.Conv2D(filters=64,
