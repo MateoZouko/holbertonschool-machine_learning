@@ -11,7 +11,7 @@ def dense_block(X, nb_filters, growth_rate, layers):
     """
     Builds a dense block using Keras
     """
-    init = K.initializers.he_normal()
+    init = K.initializers.he_normal(seed=0)
     activation = K.activations.relu
     for layer in range(layers):
         Batch_Norm1 = K.layers.BatchNormalization(axis=3)(X)
