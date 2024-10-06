@@ -13,7 +13,7 @@ def projection_block(A_prev, filters, s=2):
     Builds a projection block using Keras
     """
     F11, F3, F12 = filters
-    init = K.initializers.he_normal()
+    init = K.initializers.he_normal(seed=0)
     activation = K.activations.relu
     C11 = K.layers.Conv2D(filters=F11,
                           kernel_size=(1, 1),

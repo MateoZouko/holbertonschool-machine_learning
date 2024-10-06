@@ -12,11 +12,7 @@ def identity_block(A_prev, filters):
     Builds an identity block using Keras
     """
     F11, F3, F12 = filters
-<<<<<<< HEAD
     init = K.initializers.he_normal(seed=0)
-=======
-    init = K.initializers.he_normal()
->>>>>>> d6b893b2dc1850ec7f94e54056ad94e8bb08d1b6
     activation = K.activations.relu
     C11 = K.layers.Conv2D(filters=F11,
                           kernel_size=(1, 1),
