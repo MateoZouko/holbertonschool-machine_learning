@@ -33,9 +33,9 @@ class Yolo:
         outputs = self.model.predict(np.expand_dims(resized_image, axis=0))
 
         boxes, confidences, class_probs = self.process_outputs(outputs)
-        
+
         return boxes, confidences, class_probs
-    
+
     def process_outputs(self, outputs):
         """
         Process outputs
