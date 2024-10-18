@@ -153,3 +153,31 @@ class Yolo():
         keep_boxes = np.array(keep_boxes)
         return filtered_boxes[keep_boxes], \
             box_classes[keep_boxes], box_scores[keep_boxes]
+
+    def IoU(BB1, BB2):
+        """
+        get iou factor
+        """
+        x0_A, y0_A, x1_A, y1_A = BB1
+        x0_B, y0_B, x1_B, y1_B = BB2
+
+        x0_I = max(x0_A, x0_B)
+        y0_I = max(y0_A, y0_B)
+        x1_I = min(x1_A, x1_B)
+        y1_I = min(y1_A, y1_B)
+
+        width_I = x1_I - x0_I
+        height_I = y1_I - y0_I
+
+        if width_I < 0:
+            width_I = 0
+        if height_I < 0:
+            height_I = 0
+
+        intersection = width_I * height_I
+        width_A, height_A = x1_A - x0_A, y1_A - y0_A
+        width_B, height_B = x1_B - x0_B, y1_B - y0_B
+        union = (width_A * height_A) + (width_B * height_B) - intersection
+        IoU = intersection/union
+
+        return IoU
