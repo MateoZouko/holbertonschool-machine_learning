@@ -171,14 +171,15 @@ class Yolo:
         image_shapes = []
 
         for image in images:
-            image_shapes.append(image.shape[:2])
-            pimage = cv2.resize(image, (416, 416),
+            image_shapes.append(np.array([image.shape[0], image.shape[1]]))
+            pimage = cv2.resize(image, (self.model.input.shape[1],
+                                        self.model.input.shape[2]),
                                 interpolation=cv2.INTER_CUBIC)
             pimage = pimage / 255
-            pimage = pimage.astype(np.float32)
             pimages.append(pimage)
 
         pimages = np.array(pimages)
+
         image_shapes = np.array(image_shapes)
 
         return pimages, image_shapes
