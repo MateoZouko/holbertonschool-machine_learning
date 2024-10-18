@@ -1,126 +1,125 @@
 #!/usr/bin/env python3
 """
-Task 1
+Task 3
 """
-from keras.models import load_model
+import keras as K
 import numpy as np
-import math
+import tensorflow as tf
 
 
-class Yolo():
+class Yolo:
     """
-    Yolo class
+    Yolo class for object detection.
     """
-
     def __init__(self, model_path, classes_path, class_t, nms_t, anchors):
-        self.model = load_model(model_path)
-        self.class_names = self.read_classes(classes_path)
+        """
+        Constructor.
+        """
+        self.model = K.models.load_model(model_path)
+        with open(classes_path, 'r') as classes:
+            self.class_names = [line.strip() for line in classes]
         self.class_t = class_t
         self.nms_t = nms_t
         self.anchors = anchors
 
-    def read_classes(self, path):
+    def sigmoid(self, x):
         """
-        Read the classes
+        Sigmoid function.
         """
-
-        list_class = []
-        file = open(path, mode='r')
-        classes = file.read().split("\n")
-        for i in classes[0:-1]:
-            list_class.append(i)
-
-        return list_class
+        return 1 / (1 + np.exp(-x))
 
     def process_outputs(self, outputs, image_size):
         """
-        Process the outputs
+        Process Darknet outputs.
         """
-        box_confidence = []
         boxes = []
+        box_confidences = []
         box_class_probs = []
+        image_height, image_width = image_size
 
         for i, output in enumerate(outputs):
+            grid_height, grid_width, _, _ = output.shape
 
-            grid_height, grid_width, anchor_boxes, lastclasse = output.shape
-            image_height, image_width = image_size[0], image_size[1]
+            box_confidence = self.sigmoid(output[..., 4:5])
+            box_class_prob = self.sigmoid(output[..., 5:])
 
-            grid_x, grid_y = np.meshgrid(np.arange(grid_width),
-                                         np.arange(grid_height))
-            grid_x = grid_x.reshape(1, grid_height, grid_width, 1)
-            grid_y = grid_y.reshape(1, grid_height, grid_width, 1)
+            box_confidences.append(box_confidence)
+            box_class_probs.append(box_class_prob)
 
-            center_x = (1 / (1 + np.exp(-output[..., 0])) + grid_x)\
-                / grid_width * image_width
+            tx = output[..., 0]
+            ty = output[..., 1]
+            tw = output[..., 2]
+            th = output[..., 3]
 
-            center_y = (1 / (1 + np.exp(-output[:, :, :, 1])) + grid_y)\
-                / grid_height * image_height
+            anchor_w = self.anchors[i, :, 0]
+            anchor_h = self.anchors[i, :, 1]
+            cx, cy = np.meshgrid(np.arange(grid_width),
+                                 np.arange(grid_height))
 
-            width = self.anchors[i][:, 0] * np.exp(output[:, :, :, 2])\
-                / self.model.input.shape[1] * image_width
+            cx = np.expand_dims(cx, axis=-1)
+            cy = np.expand_dims(cy, axis=-1)
 
-            height = self.anchors[i][:, 1] * np.exp(output[:, :, :, 3])\
-                / self.model.input.shape[2] * image_height
+            bx = (self.sigmoid(tx) + cx) / grid_width
+            by = (self.sigmoid(ty) + cy) / grid_height
+            bw = (np.exp(tw) * anchor_w) / self.model.input.shape[1]
+            bh = (np.exp(th) * anchor_h) / self.model.input.shape[2]
 
-            x1 = center_x - (width / 2)
-            y1 = center_y - (height / 2)
-            x2 = center_x + (width / 2)
-            y2 = center_y + (height / 2)
+            x1 = (bx - bw / 2) * image_width
+            y1 = (by - bh / 2) * image_height
+            x2 = (bx + bw / 2) * image_width
+            y2 = (by + bh / 2) * image_height
 
-            box = np.zeros((grid_height, grid_width, anchor_boxes, 4))
-            box[:, :, :, 0] = x1
-            box[:, :, :, 1] = y1
-            box[:, :, :, 2] = x2
-            box[:, :, :, 3] = y2
+            box = np.stack([x1, y1, x2, y2], axis=-1)
             boxes.append(box)
 
-            confidence = 1 / (1 + np.exp(-output[:, :, :, 4]))
-            confidence = confidence.reshape(grid_height, grid_width,
-                                            anchor_boxes, 1)
-            box_confidence.append(confidence)
-            box_class_probs.append(1 / (1 + np.exp(-output[:, :, :, 5:])))
-
-        return boxes, box_confidence, box_class_probs
+        return boxes, box_confidences, box_class_probs
 
     def filter_boxes(self, boxes, box_confidences, box_class_probs):
         """
-        Filter the boxes
+        Filter boxes.
         """
-        threshold = self.class_t
-        selected_BB = []
-        selected_conf = []
-        selected_Class = []
+        filtered_boxes = []
+        box_classes = []
+        box_scores = []
 
-        for nb_output in range(len(box_confidences)):
-            grid_height, grid_width, anchor_boxes, lastclasse = \
-                box_confidences[nb_output].shape
+        for i in range(len(boxes)):
+            box_confidence = box_confidences[i]
+            box_class_prob = box_class_probs[i]
 
-            for i in range(grid_height):
-                for j in range(grid_width):
-                    for k in range(anchor_boxes):
+            box_scores_level = box_confidence * box_class_prob
 
-                        index_C = box_class_probs[nb_output][i, j, k]\
-                            .argmax()
+            box_class_argmax = np.argmax(box_scores_level, axis=-1)
+            box_class_score = np.max(box_scores_level, axis=-1)
 
-                        max_class = box_class_probs[nb_output][i, j, k].max()
+            mask = box_class_score >= self.class_t
 
-                        if box_confidences[nb_output][i, j, k, 0]\
-                                * max_class > threshold:
-                            selected_BB.append(boxes[nb_output][i, j, k, 0:4])
-                            selected_Class.append(index_C)
+            filtered_boxes.append(boxes[i][mask])
+            box_classes.append(box_class_argmax[mask])
+            box_scores.append(box_class_score[mask])
 
-                            conf = box_confidences[nb_output][i, j, k]\
-                                * box_class_probs[nb_output][i, j, k, index_C]
-                            selected_conf.append(float(conf))
+        filtered_boxes = np.concatenate(filtered_boxes)
+        box_classes = np.concatenate(box_classes)
+        box_scores = np.concatenate(box_scores)
 
-        selected_BB = np.array(selected_BB)
-        selected_conf = np.array(selected_conf)
-        selected_Class = np.array(selected_Class)
-        return selected_BB, selected_Class, selected_conf
+        return filtered_boxes, box_classes, box_scores
+
+    def nms(self, boxes, scores, iou_threshold):
+        """
+        Non-max suppression.
+        """
+
+        boxes_tensor = tf.convert_to_tensor(boxes, dtype=tf.float32)
+        scores_tensor = tf.convert_to_tensor(scores, dtype=tf.float32)
+
+        selected_indices = tf.image.non_max_suppression(
+            boxes_tensor, scores_tensor, max_output_size=boxes.shape[0],
+            iou_threshold=iou_threshold)
+
+        return selected_indices.numpy()
 
     def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
         """
-        Non max suppression
+        Suppresses all non-max filter boxes to return predicted bounding boxes.
         """
         unique_classes = np.unique(box_classes)
 
