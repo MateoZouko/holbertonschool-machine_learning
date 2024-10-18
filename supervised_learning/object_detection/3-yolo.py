@@ -122,33 +122,34 @@ class Yolo():
         """
         Non max suppression
         """
-        box_scores = box_scores.reshape(-1)
-        box_classes = box_classes.reshape(-1)
-        box_classes = box_classes.astype(int)
-        box_classes = box_classes.tolist()
-        box_scores = box_scores.tolist()
-        filtered_boxes = filtered_boxes.reshape(-1, 4)
-        new_boxes = []
-        new_classes = []
-        new_scores = []
-        for i in range(len(box_scores)):
-            if box_scores[i] > self.class_t:
-                new_boxes.append(filtered_boxes[i])
-                new_classes.append(box_classes[i])
-                new_scores.append(box_scores[i])
+        keep_boxes = []
 
-        filtered_boxes = np.array(new_boxes)
-        box_classes = np.array(new_classes)
-        box_scores = np.array(new_scores)
-        i = 0
-        while i < len(filtered_boxes):
-            j = i + 1
-            while j < len(filtered_boxes):
-                if self.iou(filtered_boxes[i], filtered_boxes[j]) > self.nms_t:
-                    filtered_boxes = np.delete(filtered_boxes, j, axis=0)
-                    box_scores = np.delete(box_scores, j, axis=0)
-                    box_classes = np.delete(box_classes, j, axis=0)
-                else:
-                    j += 1
-            i += 1
-        return filtered_boxes, box_classes, box_scores
+        for class_id in range(80):
+            class_indices = np.where(box_classes == class_id)[0]
+
+            if len(class_indices) == 0:
+                continue
+
+            sorted_indices = class_indices[np.argsort(
+                -box_scores[class_indices])]
+
+            keep = []
+            while len(sorted_indices) > 0:
+                current = sorted_indices[0]
+                keep.append(current)
+
+                if len(sorted_indices) == 1:
+                    break
+
+                # Compute IoU of the picked box with the rest
+                ious = np.array([IoU(filtered_boxes[current],
+                                     filtered_boxes[i])
+                                for i in sorted_indices[1:]])
+
+                sorted_indices = sorted_indices[1:][ious < self.nms_t]
+
+            keep_boxes.extend(keep)
+
+        keep_boxes = np.array(keep_boxes)
+        return filtered_boxes[keep_boxes], \
+            box_classes[keep_boxes], box_scores[keep_boxes]
