@@ -50,7 +50,6 @@ class Yolo():
             grid_x = grid_x.reshape(1, grid_height, grid_width, 1)
             grid_y = grid_y.reshape(1, grid_height, grid_width, 1)
 
-
             center_x = (1 / (1 + np.exp(-output[..., 0])) + grid_x)\
                 / grid_width * image_width
 
