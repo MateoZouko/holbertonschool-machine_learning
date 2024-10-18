@@ -51,8 +51,8 @@ class Yolo:
             classes = output.shape[-1] - 5
 
             box = output[..., :4]
-            box_confidence = output[..., 4:5]
-            box_class_prob = output[..., 5:]
+            box_confidence = self.sigmoid(output[..., 4:5])
+            box_class_prob = self.sigmoid(output[..., 5:])
 
             for i in range(grid_height):
                 for j in range(grid_width):
