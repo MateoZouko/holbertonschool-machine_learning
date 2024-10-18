@@ -167,13 +167,18 @@ class Yolo:
         """
         Preprocess images.
         """
-        images_list = []
+        pimages = []
+        image_shapes = []
 
         for image in images:
-            image_resized = cv2.resize(image, (416, 416),
-                                       interpolation=cv2.INTER_CUBIC)
-            image_normalized = image_resized / 255
-            images_list.append(image_normalized)
+            image_shapes.append(image.shape[:2])
+            pimage = cv2.resize(image, (416, 416),
+                                interpolation=cv2.INTER_CUBIC)
+            pimage = pimage / 255
+            pimages.append(pimage)
 
-        return (np.array(images_list), image_resized.shape[0],
-                image_resized.shape[1])
+        pimages = np.array(pimages)
+
+        image_shapes = np.array(image_shapes)
+
+        return pimages, image_shapes
