@@ -122,62 +122,26 @@ class Yolo():
         """
         Non max suppression
         """
-        keep_boxes = []
+        unique_classes = np.unique(box_classes)
 
-        for class_id in range(80):
-            class_indices = np.where(box_classes == class_id)[0]
+        box_predictions = []
+        predicted_box_classes = []
+        predicted_box_scores = []
 
-            if len(class_indices) == 0:
-                continue
+        for cls in unique_classes:
+            mask = np.where(box_classes == cls)
+            boxes_of_class = filtered_boxes[mask]
+            class_scores = box_scores[mask]
+            class_classes = box_classes[mask]
 
-            sorted_indices = class_indices[np.argsort(
-                -box_scores[class_indices])]
+            keep = self.nms(boxes_of_class, class_scores, self.nms_t)
 
-            keep = []
-            while len(sorted_indices) > 0:
-                current = sorted_indices[0]
-                keep.append(current)
+            box_predictions.append(boxes_of_class[keep])
+            predicted_box_classes.append(class_classes[keep])
+            predicted_box_scores.append(class_scores[keep])
 
-                if len(sorted_indices) == 1:
-                    break
+        box_predictions = np.concatenate(box_predictions, axis=0)
+        predicted_box_classes = np.concatenate(predicted_box_classes, axis=0)
+        predicted_box_scores = np.concatenate(predicted_box_scores, axis=0)
 
-                # Compute IoU of the picked box with the rest
-                ious = np.array([IoU(filtered_boxes[current],
-                                     filtered_boxes[i])
-                                for i in sorted_indices[1:]])
-
-                sorted_indices = sorted_indices[1:][ious < self.nms_t]
-
-            keep_boxes.extend(keep)
-
-        keep_boxes = np.array(keep_boxes)
-        return filtered_boxes[keep_boxes], \
-            box_classes[keep_boxes], box_scores[keep_boxes]
-
-    def IoU(BB1, BB2):
-        """
-        get iou factor
-        """
-        x0_A, y0_A, x1_A, y1_A = BB1
-        x0_B, y0_B, x1_B, y1_B = BB2
-
-        x0_I = max(x0_A, x0_B)
-        y0_I = max(y0_A, y0_B)
-        x1_I = min(x1_A, x1_B)
-        y1_I = min(y1_A, y1_B)
-
-        width_I = x1_I - x0_I
-        height_I = y1_I - y0_I
-
-        if width_I < 0:
-            width_I = 0
-        if height_I < 0:
-            height_I = 0
-
-        intersection = width_I * height_I
-        width_A, height_A = x1_A - x0_A, y1_A - y0_A
-        width_B, height_B = x1_B - x0_B, y1_B - y0_B
-        union = (width_A * height_A) + (width_B * height_B) - intersection
-        IoU = intersection/union
-
-        return IoU
+        return box_predictions, predicted_box_classes, predicted_box_scores
