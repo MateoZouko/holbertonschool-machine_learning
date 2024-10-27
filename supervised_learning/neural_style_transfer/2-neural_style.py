@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Task 1
+Task 2
 """
 import numpy as np
 import tensorflow as tf
@@ -43,7 +43,7 @@ class NST:
     @staticmethod
     def scale_image(image):
         """
-        Rescales an image such that its pixels values are between 0 and 1
+        This method rescales an image such that its pixels values are between 0
         """
         error = "image must be a numpy.ndarray with shape (h, w, 3)"
         if (not isinstance(image, np.ndarray) or len(image.shape) != 3
@@ -56,17 +56,14 @@ class NST:
         else:
             w_new = 512
             h_new = int(h * w_new / w)
-
         image = tf.convert_to_tensor(image, dtype=tf.float32)
         image = tf.image.resize(image, (h_new, w_new), method="bicubic")
-        # Normalize the image pixel values to be in the range [0, 1]
         image = tf.clip_by_value(image / 255.0, 0, 1)
         return image[tf.newaxis, ...]
 
     def load_model(self):
         """
-        This method loads the VGG19 model
-        and saves it in the instance attribute
+        This method loads the VGG19 model for Neural Style Transfer.
         """
         vgg = tf.keras.applications.VGG19(include_top=False,
                                           weights='imagenet')
@@ -77,3 +74,22 @@ class NST:
         outputs = [vgg.get_layer(layer).output for layer in self.style_layers]
         outputs.append(vgg.get_layer(self.content_layer).output)
         self.model = tf.keras.models.Model(inputs=vgg.input, outputs=outputs)
+
+    @staticmethod
+    def gram_matrix(input_layer):
+        """
+        This method calculates the Gram matrices for a given layer.
+        """
+        error = "input_layer must be a tensor of rank 4"
+        if (not isinstance(input_layer, (tf.Tensor, tf.Variable))
+                or len(input_layer.shape) != 4):
+            raise TypeError(error)
+
+        _, h, w, c = input_layer.shape
+        F = tf.reshape(input_layer, (h * w, c))
+        gram = tf.matmul(F, F, transpose_a=True)
+        gram = tf.expand_dims(gram, axis=0)
+
+        nb_locations = tf.cast(h * w, tf.float32)
+
+        return gram / nb_locations
