@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Task 0
+Task 1
 """
 import numpy as np
 import tensorflow as tf
@@ -38,6 +38,7 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
+        self.load_model()
 
     @staticmethod
     def scale_image(image):
@@ -55,7 +56,23 @@ class NST:
         else:
             w_new = 512
             h_new = int(h * w_new / w)
+
         image = tf.convert_to_tensor(image, dtype=tf.float32)
         image = tf.image.resize(image, (h_new, w_new), method="bicubic")
+        # Normalize the image pixel values to be in the range [0, 1]
         image = tf.clip_by_value(image / 255.0, 0, 1)
         return image[tf.newaxis, ...]
+
+    def load_model(self):
+        """
+        This method loads the VGG19 model and saves it in the instance attribute
+        """
+        vgg = tf.keras.applications.VGG19(include_top=False,
+                                          weights='imagenet')
+        for layer in vgg.layers:
+            if isinstance(layer, tf.keras.layers.MaxPooling2D):
+                layer.__class__ = tf.keras.layers.AveragePooling2D
+        vgg.trainable = False
+        outputs = [vgg.get_layer(layer).output for layer in self.style_layers]
+        outputs.append(vgg.get_layer(self.content_layer).output)
+        self.model = tf.keras.models.Model(inputs=vgg.input, outputs=outputs)
