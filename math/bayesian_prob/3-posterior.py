@@ -8,8 +8,8 @@ import numpy as np
 
 def posterior(x, n, P, Pr):
     """
-    calculates the posterior probability for the various hypothetical
-    probabilities of developing severe side effects given the data
+    Calculates the posterior probability for the various hypothetical
+    probabilities of developing severe side effects given the data.
     """
     if type(n) is not int or n <= 0:
         raise ValueError("n must be a positive integer")
@@ -29,8 +29,8 @@ def posterior(x, n, P, Pr):
     if not np.isclose(np.sum(Pr), 1):
         raise ValueError("Pr must sum to 1")
 
-    fact = np.math.factorial(n) / (np.math.factorial(x) *
-                                   np.math.factorial(n - x))
+    fact = np.math.factorial(n) / (np.math.factorial(x)
+                                   * np.math.factorial(n - x))
     likelihood = fact * (P ** x) * ((1 - P) ** (n - x))
 
     numerator = likelihood * Pr
@@ -38,4 +38,6 @@ def posterior(x, n, P, Pr):
     evidence = np.sum(numerator)
 
     posterior = numerator / evidence
-    return posterior
+
+    output_values = posterior[posterior > 0][:3]
+    return output_values
