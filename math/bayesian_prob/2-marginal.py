@@ -6,9 +6,10 @@ Task 2
 import numpy as np
 
 
-def marginal(x, n, P, Pr):
+def posterior(x, n, P, Pr):
     """
-    calculates the marginal probability of obtaining the data
+    Calculates the posterior probability for the various hypothetical
+    probabilities of developing severe side effects given the data.
     """
     if type(n) is not int or n <= 0:
         raise ValueError("n must be a positive integer")
@@ -27,6 +28,16 @@ def marginal(x, n, P, Pr):
         raise ValueError("All values in Pr must be in the range [0, 1]")
     if not np.isclose(np.sum(Pr), 1):
         raise ValueError("Pr must sum to 1")
+
     fact = np.math.factorial(n) / (np.math.factorial(x)
                                    * np.math.factorial(n - x))
-    return fact * (P ** x) * ((1 - P) ** (n - x)) * Pr
+    likelihood = fact * (P ** x) * ((1 - P) ** (n - x))
+
+    numerator = likelihood * Pr
+
+    evidence = np.sum(numerator)
+
+    posterior = numerator / evidence
+
+    output_values = posterior[posterior > 0][:3]
+    return output_values
