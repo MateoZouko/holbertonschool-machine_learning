@@ -7,6 +7,9 @@ import numpy as np
 
 
 class MultiNormal:
+    """
+    Represents a Multivariate Normal distribution.
+    """
     def __init__(self, data):
         """
         Initialize the MultiNormal class with the given data.
