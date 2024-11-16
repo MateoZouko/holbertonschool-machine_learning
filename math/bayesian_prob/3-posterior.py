@@ -28,6 +28,14 @@ def posterior(x, n, P, Pr):
         raise ValueError("All values in Pr must be in the range [0, 1]")
     if not np.isclose(np.sum(Pr), 1):
         raise ValueError("Pr must sum to 1")
-    fact = np.math.factorial(n) / (np.math.factorial(x)
-                                   * np.math.factorial(n - x))
-    return fact * (P ** x) * ((1 - P) ** (n - x)) * Pr
+
+    fact = np.math.factorial(n) / (np.math.factorial(x) *
+                                   np.math.factorial(n - x))
+    likelihood = fact * (P ** x) * ((1 - P) ** (n - x))
+
+    numerator = likelihood * Pr
+
+    evidence = np.sum(numerator)
+
+    posterior = numerator / evidence
+    return posterior
