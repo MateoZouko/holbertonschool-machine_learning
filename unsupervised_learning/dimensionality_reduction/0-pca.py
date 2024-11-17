@@ -10,9 +10,9 @@ def pca(X, var=0.95):
     """
     performs PCA on a dataset
     """
-    U, s, V = np.linalg.svd(X, full_matrices=False)
+    U, s, V = np.linalg.svd(X)
     variance = (s**2) / np.sum(s**2)
     cum = np.cumsum(variance)
     k = np.argmax(cum >= var) + 1
-    W = V.T[:k].T
+    W = V[:k].T
     return W
