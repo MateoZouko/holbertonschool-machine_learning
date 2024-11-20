@@ -3,52 +3,60 @@
 Task 1
 """
 
+
 import numpy as np
 
 
 def kmeans(X, k, iterations=1000):
     """
-    Performs K-means clustering on a dataset.
+    Performs K-means on a dataset
 
-    Args:
-        X: numpy.ndarray of shape (n, d) containing the dataset
-        k: positive integer, the number of clusters
-        iterations: positive integer,
-        the maximum number of iterations
+    parameters:
+        X [numpy.ndarray of shape (n, d)]:
+            contains the dataset that will be used for K-means clustering
+            n: the number of data points
+            d: the number of dimensions for each data point
+        k [positive int]:
+            contains the number of clusters
+        iterations [positive int]:
+            contains the maximum number of iterations that should be performed
 
-    Returns:
-        C: numpy.ndarray of shape (k, d) containing
-        the centroid means for each cluster
-        clss: numpy.ndarray of shape (n,) containing
-        the cluster indices for each data point
+    if no change in the cluster centroids occurs between iterations,
+        the function should return
+
+    initialize the cluster centroids using a multivariate unitform distribution
+
+    if a cluster contains no data points during the update step,
+        its centroid should be reinitialized
+
+    should use:
+        numpy.random.uniform exactly twice
+        at most 2 loops
+
+    returns:
+        C, clss:
+            C [numpy.ndarray of shape (k, d)]:
+                containing the centroid means for each cluster
+            clss [numpy.ndarray of shape (n,)]:
+                containting the index of the cluster in c
+                    that each data point belongs to
+        or None, None on failure
     """
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+    # type checks to catch failure
+    if type(X) is not np.ndarray or len(X.shape) != 2:
         return None, None
-    if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
+    if type(k) is not int or k <= 0:
         return None, None
-    if not isinstance(iterations, int) or iterations <= 0:
+    if type(iterations) is not int or iterations <= 0:
         return None, None
-
     n, d = X.shape
-
-    # Initialize centroids using a multivariate uniform distribution
-    C = np.random.uniform(np.min(X, axis=0), np.max(X, axis=0), size=(k, d))
-
-    for _ in range(iterations):
-        # Compute distances and assign clusters
-        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
-        clss = np.argmin(distances, axis=1)
-
-        # Compute new centroids as the mean of points in each cluster
-        new_C = np.array([X[clss == i].mean(axis=0) if np.any(clss == i)
-                          else np.random.uniform(np.min(X, axis=0),
-                                                 np.max(X, axis=0), size=(d,))
-                          for i in range(k)])
-
-        # Check for convergence (no change in centroids)
-        if np.all(new_C == C):
-            break
-
-        C = new_C
-
+    # initialize cluster centroids using multivariate uniform distribution
+    low = np.min(X, axis=0)
+    high = np.max(X, axis=0)
+    C = np.random.uniform(low, high, size=(k, d))
+    # save copy of centroids to compare against later
+    save_centroids = np.copy(C)
+    if C.all() == saved_centroids.all():
+        return C, clss
+    saved_centroids = np.copy(C)
     return C, clss
