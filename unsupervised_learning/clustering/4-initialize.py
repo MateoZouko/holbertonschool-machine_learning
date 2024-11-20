@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Initializes variables for a Gaussian Mixture Model
+Task 4
 """
 
 import numpy as np
