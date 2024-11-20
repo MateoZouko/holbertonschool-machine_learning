@@ -42,21 +42,29 @@ def kmeans(X, k, iterations=1000):
                     that each data point belongs to
         or None, None on failure
     """
-    # type checks to catch failure
-    if type(X) is not np.ndarray or len(X.shape) != 2:
-        return None, None
     if type(k) is not int or k <= 0:
+        return None, None
+    if type(X) is not np.ndarray or len(X.shape) != 2:
         return None, None
     if type(iterations) is not int or iterations <= 0:
         return None, None
     n, d = X.shape
-    # initialize cluster centroids using multivariate uniform distribution
-    low = np.min(X, axis=0)
-    high = np.max(X, axis=0)
-    C = np.random.uniform(low, high, size=(k, d))
-    # save copy of centroids to compare against later
-    save_centroids = np.copy(C)
-    if C.all() == saved_centroids.all():
-        return C, clss
-    saved_centroids = np.copy(C)
-    return C, clss
+    centroids = np.random.uniform(np.min(X, axis=0), np.max(X, axis=0),
+                                  size=(k, d))
+    for i in range(iterations):
+        copy = centroids.copy()
+        D = np.sqrt(((X - centroids[:, np.newaxis]) ** 2).sum(axis=2))
+        clss = np.argmin(D, axis=0)
+        for j in range(k):
+            if len(X[clss == j]) == 0:
+                centroids[j] = np.random.uniform(np.min(X, axis=0),
+                                                 np.max(X, axis=0),
+                                                 size=(1, d))
+            else:
+                centroids[j] = (X[clss == j]).mean(axis=0)
+        D = np.sqrt(((X - centroids[:, np.newaxis]) ** 2).sum(axis=2))
+        clss = np.argmin(D, axis=0)
+        if np.all(copy == centroids):
+            return centroids, clss
+
+    return centroids, clss
