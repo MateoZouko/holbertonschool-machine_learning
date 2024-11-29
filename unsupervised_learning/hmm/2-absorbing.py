@@ -21,11 +21,28 @@ def absorbing(P):
         True, if absorbing
         False, if not absorbing or on failure
     """
-    # check that P is the correct type and dimensions
-    if type(P) is not np.ndarray or len(P.shape) != 2:
+    if type(P) is not np.ndarray:
         return False
-    # save value of n and check that P is square
-    n, n_check = P.shape
-    if n != n_check:
+    if len(P.shape) != 2:
         return False
-    return True
+    n, n_t = P.shape
+    if n != n_t:
+        return False
+    sum_test = np.sum(P, axis=1)
+    for elem in sum_test:
+        if not np.isclose(elem, 1):
+            return False
+
+    diagonal = np.diag(P)
+    if (diagonal == 1).all():
+        return True
+
+    absorb = (diagonal == 1)
+    for row in range(len(diagonal)):
+        for col in range(len(diagonal)):
+            if P[row, col] > 0 and absorb[col]:
+                absorb[row] = 1
+    if (absorb == 1).all():
+        return True
+
+    return False
