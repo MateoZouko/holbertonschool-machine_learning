@@ -99,4 +99,3 @@ class Simple_GAN(keras.Model):
             zip(gen_gradients, self.generator.trainable_variables))
 
         return {"discr_loss": discr_loss, "gen_loss": gen_loss}
-
