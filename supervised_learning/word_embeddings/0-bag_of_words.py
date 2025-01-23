@@ -2,17 +2,32 @@
 """
 Task 0
 """
-
-from sklearn.feature_extraction.text import CountVectorizer
+import numpy as np
+import re
 
 
 def bag_of_words(sentences, vocab=None):
     """
-    Creates a bag of words embedding matrix
+    Creates a bag of words embedding matrix.
     """
-    vector = CountVectorizer(vocabulary=vocab)
-    X = vector.fit_transform(sentences)
-    features = vector.get_feature_names()
-    embeddings = X.toarray()
+    processed_sentences = []
+    for sentence in sentences:
+        sentence = re.findall(r'\b[a-zA-Z]{2,}\b', sentence.lower())
+        processed_sentences.append(sentence)
 
-    return embeddings, features
+    if vocab is None:
+        vocab = sorted(set(
+            word for sentence in processed_sentences for word in sentence))
+
+    s = len(processed_sentences)
+    f = len(vocab)
+    embeddings = np.zeros((s, f), dtype=int)
+
+    for i, sentence in enumerate(processed_sentences):
+        for word in sentence:
+            if word in vocab:
+                embeddings[i, vocab.index(word)] += 1
+
+    vocab = np.array(vocab)
+
+    return embeddings, vocab
