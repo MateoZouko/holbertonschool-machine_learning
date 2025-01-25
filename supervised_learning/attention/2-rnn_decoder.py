@@ -45,4 +45,3 @@ class RNNDecoder(tf.keras.layers.Layer):
         y = tf.squeeze(y, axis=1)
 
         return y, s
-    
