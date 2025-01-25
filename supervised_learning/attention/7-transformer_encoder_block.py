@@ -41,4 +41,3 @@ class EncoderBlock(tf.keras.layers.Layer):
         out2 = self.layernorm2(out1 + ffn_output)
 
         return out2
-    

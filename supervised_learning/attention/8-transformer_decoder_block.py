@@ -49,4 +49,3 @@ class DecoderBlock(tf.keras.layers.Layer):
         out3 = self.layernorm3(out2 + ffn_output)
 
         return out3
-    
